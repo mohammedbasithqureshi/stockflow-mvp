@@ -117,6 +117,7 @@ export default function ProductTable({ rows }: { rows: Row[] }) {
                       <input type="hidden" name="delta" value="1" />
                       <button className="w-7 h-7 border border-gray-300 rounded hover:bg-gray-100">+</button>
                     </form>
+                    <form action={adjustStock} className="flex items-center gap-1 ml-2"><input type="hidden" name="id" value={r.id} /><input name="delta" type="number" step={1} required placeholder="+/- N" className="w-20 border border-gray-300 rounded px-2 py-1 text-gray-900" /><button className="border border-gray-300 rounded px-2 py-1 hover:bg-gray-100">Apply</button></form>
                   </div>
                 </td>
                 <td className="px-4 py-3">
@@ -159,3 +160,4 @@ export default function ProductTable({ rows }: { rows: Row[] }) {
     </div>
   );
 }
+
