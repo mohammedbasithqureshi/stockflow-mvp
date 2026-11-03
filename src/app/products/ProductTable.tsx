@@ -13,32 +13,82 @@ type Row = {
   isLow: boolean;
 };
 
+type SortKey = "name" | "sku" | "quantityOnHand" | "sellingPrice";
+
 export default function ProductTable({ rows }: { rows: Row[] }) {
   const [query, setQuery] = useState("");
+  const [lowOnly, setLowOnly] = useState(false);
+  const [sortKey, setSortKey] = useState<SortKey>("name");
+  const [asc, setAsc] = useState(true);
+
+  function toggleSort(key: SortKey) {
+    if (key === sortKey) {
+      setAsc(!asc);
+    } else {
+      setSortKey(key);
+      setAsc(true);
+    }
+  }
 
   const q = query.trim().toLowerCase();
-  const filtered = rows.filter(
-    (r) => r.name.toLowerCase().includes(q) || r.sku.toLowerCase().includes(q)
-  );
+  const filtered = rows
+    .filter(
+      (r) =>
+        (r.name.toLowerCase().includes(q) || r.sku.toLowerCase().includes(q)) &&
+        (!lowOnly || r.isLow)
+    )
+    .sort((a, b) => {
+      let result = 0;
+      if (sortKey === "name" || sortKey === "sku") {
+        result = a[sortKey].localeCompare(b[sortKey]);
+      } else {
+        result = (a[sortKey] ?? -1) - (b[sortKey] ?? -1);
+      }
+      return asc ? result : -result;
+    });
+
+  function SortHeader({ label, k }: { label: string; k: SortKey }) {
+    return (
+      <th className="px-4 py-3">
+        <button
+          type="button"
+          onClick={() => toggleSort(k)}
+          className="font-semibold hover:text-blue-600"
+        >
+          {label} {sortKey === k ? (asc ? "\u25B2" : "\u25BC") : ""}
+        </button>
+      </th>
+    );
+  }
 
   return (
     <div>
-      <input
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder="Search by name or SKU..."
-        className="w-full max-w-sm border border-gray-300 rounded px-3 py-2 mb-4 text-gray-900 bg-white"
-      />
+      <div className="flex flex-wrap items-center gap-4 mb-4">
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search by name or SKU..."
+          className="w-full max-w-sm border border-gray-300 rounded px-3 py-2 text-gray-900 bg-white"
+        />
+        <label className="flex items-center gap-2 text-sm text-gray-700">
+          <input
+            type="checkbox"
+            checked={lowOnly}
+            onChange={(e) => setLowOnly(e.target.checked)}
+          />
+          Low stock only
+        </label>
+      </div>
 
       <div className="bg-white rounded-lg shadow overflow-x-auto">
         <table className="w-full text-sm text-left">
           <thead className="bg-gray-100 text-gray-700">
             <tr>
-              <th className="px-4 py-3">Name</th>
-              <th className="px-4 py-3">SKU</th>
-              <th className="px-4 py-3">Quantity</th>
+              <SortHeader label="Name" k="name" />
+              <SortHeader label="SKU" k="sku" />
+              <SortHeader label="Quantity" k="quantityOnHand" />
               <th className="px-4 py-3">Stock</th>
-              <th className="px-4 py-3">Selling price</th>
+              <SortHeader label="Selling price" k="sellingPrice" />
               <th className="px-4 py-3">Actions</th>
             </tr>
           </thead>
