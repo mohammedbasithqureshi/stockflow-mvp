@@ -16,6 +16,7 @@ export default async function DashboardPage() {
   const defaultThreshold = user.organization.defaultLowStockThreshold;
   const totalProducts = products.length;
   const totalUnits = products.reduce((sum, p) => sum + p.quantityOnHand, 0);
+  const inventoryValue = products.reduce((sum, p) => sum + (p.costPrice ?? 0) * p.quantityOnHand, 0);
 
   const lowStock = products
     .map((p) => ({ ...p, threshold: p.lowStockThreshold ?? defaultThreshold }))
@@ -27,7 +28,8 @@ export default async function DashboardPage() {
       <main className="max-w-5xl mx-auto p-4">
         <h1 className="text-2xl font-bold text-gray-900 mb-4">Dashboard</h1>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div className="bg-white rounded-lg shadow p-5"><p className="text-sm text-gray-500">Inventory value (at cost)</p><p className="text-3xl font-bold text-gray-900">{inventoryValue.toFixed(2)}</p></div>
           <div className="bg-white rounded-lg shadow p-5">
             <p className="text-sm text-gray-500">Total products</p>
             <p className="text-3xl font-bold text-gray-900">{totalProducts}</p>
@@ -83,3 +85,4 @@ export default async function DashboardPage() {
     </div>
   );
 }
+
