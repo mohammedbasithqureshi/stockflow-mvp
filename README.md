@@ -4,6 +4,11 @@ A minimal multi-tenant SaaS inventory management app built for a 6-hour technica
 
 **Live demo:** https://stockflow-mvp-ecru.vercel.app/login
 
+## Demo account
+
+- Email: Demo@gmail.com
+- Password: Demo123
+
 ## Features
 
 - Sign up and log in with email and password (an organization is created on signup)
@@ -45,5 +50,6 @@ A minimal multi-tenant SaaS inventory management app built for a 6-hour technica
 ## Out of scope (by design)
 
 Multi-warehouse, variants, integrations, purchase orders, email notifications, CSV import, roles and staff users, audit logs, billing.
+
 
 
